@@ -15,6 +15,8 @@ import sublime_plugin
 from . import vhdl_lang as vhdl
 from . import vhdl_util as util
 
+NX_DISABLED = []
+
 # Highlight matching regions.
 class nx_lint_event(sublime_plugin.EventListener):
 
@@ -24,10 +26,17 @@ class nx_lint_event(sublime_plugin.EventListener):
     def is_vhdl(self, view):
         
         if view.file_name() is not None:
+
+            if view.file_name() in NX_DISABLED:
+                print ("no lint bro")
+                return False
+
             filename, file_extension = os.path.splitext(view.file_name())
             if file_extension == ".vhd":
+                print ("Lint bro")
                 return True
             else:
+                print ("no lint bro")
                 return False
 
     def on_load(self, view):
@@ -93,10 +102,14 @@ class coding_linting(sublime_plugin.TextCommand):
     error_type_msg = ""
 
     def run(self, edit):
-        self.error_type_msg = "Coding rules error:"
-        # lint_array = ["decla","arch"]
         decla_work_array = ["constant", "variable", "signal", " type"]
         prefix_work_array = ["inst_", "p_", "g_", "b_"]
+        if self.view.file_name() in NX_DISABLED:
+            self.view.run_command("remove_linting")
+            return
+        self.error_type_msg = "Coding rules error:"
+        # lint_array = ["decla","arch"]
+
         self.rm_regions_lint(decla_work_array)
         self.prefix_decla(decla_work_array)
         self.rm_regions_lint(prefix_work_array)
@@ -252,6 +265,21 @@ class auto_clean_space(sublime_plugin.TextCommand):
         self.view.replace(edit, whole_region, buffer_str)
 
 
+class en_disable_linting(sublime_plugin.TextCommand):
+    """Disable the linting for the current buffer
+    """
+    def run(self, edit):
+        filename = self.view.file_name()
+        self.view.file_name()
+        if filename is not None and filename in NX_DISABLED:
+            NX_DISABLED.remove(filename)
+        elif filename is not None:
+            NX_DISABLED.append(filename)
+            self.view.run_command("remove_linting")
+        print (NX_DISABLED)
+
+
+
 class beautify(sublime_plugin.TextCommand):
     def run(self, edit):
         # Save original point, and convert to row col.  Beautify
@@ -333,5 +361,4 @@ class beautify(sublime_plugin.TextCommand):
         util.set_cursor(self, original_point)
 
 # ----------------------------------------------------------------
-
 

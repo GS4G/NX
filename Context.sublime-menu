@@ -4,10 +4,12 @@
 		"caption": "NX",
 		"children":
 		[
-			{"caption": "NX: Clean space & tab",   "command": "auto_clean_space"},
-    		{"caption": "NX: Lint coding rules",   "command": "coding_linting"},
-    		{"caption": "NX: Remove Lint mark",   "command": "remove_linting"},
-    		{"caption": "NX: Beautify",            "command": "beautify"},
+			{"caption": "NX: Clean space & tab",   			"command": "auto_clean_space"},
+    		{"caption": "NX: Lint coding rules",   			"command": "coding_linting"},
+    		{"caption": "NX: Remove Lint mark",   			"command": "remove_linting"},
+    		{"caption": "NX: Beautify",            			"command": "beautify"},
+    		{"caption": "NX: Disable lint on this file",	"command": "en_disable_linting"}
+    		
 		]
 	}
 ]
